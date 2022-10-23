@@ -83,8 +83,8 @@ st.write(user_data)
 submit = st.button("Submit")
 
 user_input_prepared = pd.DataFrame(user_data, columns =["", "UTC", "Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5", "CNT"])
-user_input_prepared = full_pipeline.transform(user_input_prepared)
-user_prediction = clf.predict(user_input_prepared)
+## user_input_prepared = full_pipeline.transform(user_input_prepared)
+user_prediction = model.predict(X=user_input_prepared)
 user_prediction = 0
 
 if submit:
@@ -92,4 +92,3 @@ if submit:
         result = "SAFE"
     else:
         result = "UNSAFE"
-

@@ -5,6 +5,8 @@ import math
 from PIL import Image
 ## from pipeline import full_pipeline
 import pickle
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 
 with open("model.pkl", 'rb') as file:
     model = pickle.load(file)
@@ -75,7 +77,7 @@ max_CNT = int(data["cnt"].max())
 min_CNT = 0
 cnt = st.sidebar.slider("CNT", min_CNT, max_CNT, int((min_CNT+max_CNT)/2))
 
-user_data = pd.DataFrame(np.array([["0", 1654733331, temp, humidity, tvoc, ECO2, RAW_H2, ETHANOL, PRESSURE, PM1, PM25, NC05, NC1, NC25, cnt]]),
+user_data = pd.DataFrame(np.array([[0, 1654733331, temp, humidity, tvoc, ECO2, RAW_H2, ETHANOL, PRESSURE, PM1, PM25, NC05, NC1, NC25, cnt]]),
 columns = ["", "UTC", "Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5", "CNT"])
 st.subheader("User input:")
 st.write(user_data)
@@ -83,9 +85,13 @@ st.write(user_data)
 submit = st.button("Submit")
 
 user_input_prepared = pd.DataFrame(user_data, columns =["", "UTC", "Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5", "CNT"])
-## user_input_prepared = full_pipeline.transform(user_input_prepared)
-user_prediction = model.predict(X=user_input_prepared)
-user_prediction = 0
+
+full_pipeline = Pipeline([
+    ("std_scaler", StandardScaler())
+])
+
+user_input_prepared = full_pipeline.fit_transform(user_input_prepared)
+user_prediction = model.predict(user_input_prepared)
 
 if submit:
     if user_prediction == 0:

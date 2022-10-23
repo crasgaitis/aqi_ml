@@ -98,3 +98,6 @@ if submit:
         result = "SAFE"
     else:
         result = "UNSAFE"
+
+    st.write("Your air is...")
+    st.subheader(result)

@@ -73,18 +73,14 @@ max_NC25 = int(data["nc2.5"].max())
 min_NC25 = 0
 NC25 = st.sidebar.slider("NC2.5", min_NC25, max_NC25, int((min_NC25+max_NC25)/2))
 
-max_CNT = int(data["cnt"].max())
-min_CNT = 0
-cnt = st.sidebar.slider("CNT", min_CNT, max_CNT, int((min_CNT+max_CNT)/2))
-
-user_data = pd.DataFrame(np.array([[0, 1654733331, temp, humidity, tvoc, ECO2, RAW_H2, ETHANOL, PRESSURE, PM1, PM25, NC05, NC1, NC25, cnt]]),
-columns = ["", "UTC", "Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5", "CNT"])
+user_data = pd.DataFrame(np.array([[temp, humidity, tvoc, ECO2, RAW_H2, ETHANOL, PRESSURE, PM1, PM25, NC05, NC1, NC25]]),
+columns = ["Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5"])
 st.subheader("User input:")
 st.write(user_data)
 
 submit = st.button("Submit")
 
-user_input_prepared = pd.DataFrame(user_data, columns =["", "UTC", "Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5", "CNT"])
+user_input_prepared = pd.DataFrame(user_data, columns =["Temperature[C]", "Humidity[%]", "TVOC[ppb]", "eCO2[ppm]", "Raw H2", "Raw Ethanol", "Pressure[hPa]", "PM1.0", "PM2.5", "NC0.5", "NC1.0", "NC2.5"])
 
 full_pipeline = Pipeline([
     ("std_scaler", StandardScaler())
@@ -94,9 +90,9 @@ user_input_prepared = full_pipeline.fit_transform(user_input_prepared)
 user_prediction = model.predict(user_input_prepared)
 
 if submit:
-    if user_prediction == 0:
+    if user_prediction == [0]:
         result = "SAFE"
-    else:
+    elif user_prediction == [1]:
         result = "UNSAFE"
 
     st.write("Your air is...")

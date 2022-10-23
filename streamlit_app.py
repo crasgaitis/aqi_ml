@@ -11,6 +11,8 @@ from sklearn.pipeline import Pipeline
 with open("model.pkl", 'rb') as file:
     model = pickle.load(file)
 
+image = Image.open('assets/smoke.jpg')
+st.image(image)
 st.title('ML Model')
 st.write('Determine if your air quality is dangerously smoky!')
 
